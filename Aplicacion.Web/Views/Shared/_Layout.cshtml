@@ -7,12 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Aplicacion.Web.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/x-icon" href="~/img/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 </head>
-<body>
+
+<body class="bg-light" style="background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Aplicacion.Web</a>
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/logo-ujed.png" alt="UJED" style="height:40px; margin-right:10px;">
+                    <strong>Asistencia UJED</strong>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,11 +27,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Alumnos" asp-action="Index">Alumnos</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Docentes" asp-action="Index">Docentes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Asistencias" asp-action="Index">Asistencias</a>
+                        </li>
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -37,9 +51,24 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="text-center mt-5 py-4 border-top bg-white shadow-sm">
         <div class="container">
-            &copy; 2025 - Aplicacion.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <p class="mb-1 fw-bold text-primary">Facultad de Ingeniería, Ciencias y Arquitectura - UJED</p>
+            <p class="text-muted mb-2">Desarrollo de Aplicación de Control de Asistencia mediante Códigos QR</p>
+
+            <div class="d-flex justify-content-center gap-3">
+                <a href="https://www.ujed.mx" target="_blank" class="text-decoration-none text-secondary">
+                    <i class="bi bi-globe"></i> Sitio oficial
+                </a>
+                <a href="https://www.facebook.com/UJEDoficial" target="_blank" class="text-decoration-none text-secondary">
+                    <i class="bi bi-facebook"></i> Facebook
+                </a>
+                <a href="mailto:contacto@ujed.mx" class="text-decoration-none text-secondary">
+                    <i class="bi bi-envelope-fill"></i> Contacto
+                </a>
+            </div>
+
+            <small class="text-muted d-block mt-2">© 2025 Universidad Juárez del Estado de Durango. Todos los derechos reservados.</small>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Aplicacion.Web.Models;
 
 namespace Aplicacion.Web.Data
 {
@@ -9,5 +10,8 @@ namespace Aplicacion.Web.Data
             : base(options)
         {
         }
+        public DbSet<Aplicacion.Web.Models.Alumno> Alumno { get; set; } = default!;
+        public DbSet<Aplicacion.Web.Models.Docente> Docente { get; set; } = default!;
+        public DbSet<Aplicacion.Web.Models.Asistencia> Asistencia { get; set; } = default!;
     }
 }
