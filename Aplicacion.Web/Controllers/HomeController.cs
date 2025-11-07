@@ -1,6 +1,6 @@
-﻿using Aplicacion.Web.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Aplicacion.Web.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Aplicacion.Web.Controllers
 {
