@@ -22,7 +22,7 @@ namespace Aplicacion.Web.Controllers
         // GET: Asistencias
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Asistencia.Include(a => a.Alumno);
+            var applicationDbContext = _context.Asistencia.Include(a => a.Alumno).Include(a => a.ClaseActiva).Include(a => a.Docente);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,6 +36,8 @@ namespace Aplicacion.Web.Controllers
 
             var asistencia = await _context.Asistencia
                 .Include(a => a.Alumno)
+                .Include(a => a.ClaseActiva)
+                .Include(a => a.Docente)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (asistencia == null)
             {
@@ -49,6 +51,8 @@ namespace Aplicacion.Web.Controllers
         public IActionResult Create()
         {
             ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula");
+            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId");
+            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo");
             return View();
         }
 
@@ -57,7 +61,7 @@ namespace Aplicacion.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AlumnoId,FechaHora,Materia,Estado")] Asistencia asistencia)
+        public async Task<IActionResult> Create([Bind("Id,AlumnoId,DocenteId,ClaseActivaId,FechaRegistro,Estado")] Asistencia asistencia)
         {
             if (ModelState.IsValid)
             {
@@ -66,6 +70,8 @@ namespace Aplicacion.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
+            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
+            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
             return View(asistencia);
         }
 
@@ -83,6 +89,8 @@ namespace Aplicacion.Web.Controllers
                 return NotFound();
             }
             ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
+            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
+            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
             return View(asistencia);
         }
 
@@ -91,7 +99,7 @@ namespace Aplicacion.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AlumnoId,FechaHora,Materia,Estado")] Asistencia asistencia)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,AlumnoId,DocenteId,ClaseActivaId,FechaRegistro,Estado")] Asistencia asistencia)
         {
             if (id != asistencia.Id)
             {
@@ -119,6 +127,8 @@ namespace Aplicacion.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
+            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
+            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
             return View(asistencia);
         }
 
@@ -132,6 +142,8 @@ namespace Aplicacion.Web.Controllers
 
             var asistencia = await _context.Asistencia
                 .Include(a => a.Alumno)
+                .Include(a => a.ClaseActiva)
+                .Include(a => a.Docente)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (asistencia == null)
             {
@@ -160,5 +172,48 @@ namespace Aplicacion.Web.Controllers
         {
             return _context.Asistencia.Any(e => e.Id == id);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Registrar(string codigo)
+        {
+            var clase = await _context.ClasesActivas.FirstOrDefaultAsync(c => c.CodigoClase == codigo && c.Activa);
+            if (clase == null)
+            {
+                return View("Mensaje", $"❌ Clase no encontrada o expirada ({codigo})");
+            }
+
+            if (DateTime.Now > clase.FechaExpiracion)
+            {
+                clase.Activa = false;
+                _context.ClasesActivas.Update(clase);
+                await _context.SaveChangesAsync();
+                return View("Mensaje", $"⚠️ Esta clase ha expirado. El código QR ya no es válido.");
+            }
+
+            int alumnoDePruebaId = 1; // temporal hasta implementar Identity
+
+            var asistenciaExistente = await _context.Asistencia
+                .FirstOrDefaultAsync(a => a.AlumnoId == alumnoDePruebaId && a.ClaseActivaId == clase.Id);
+
+            if (asistenciaExistente != null)
+            {
+                ViewBag.Materia = clase.Materia;
+                return View("Registrar", asistenciaExistente);
+            }
+
+            var asistencia = new Asistencia
+            {
+                AlumnoId = alumnoDePruebaId,
+                ClaseActivaId = clase.Id,
+                FechaRegistro = DateTime.Now
+            };
+
+            _context.Asistencia.Add(asistencia);
+            await _context.SaveChangesAsync();
+
+            ViewBag.Materia = clase.Materia;
+            return View("Registrar", asistencia);
+        }
+
     }
 }

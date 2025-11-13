@@ -1,0 +1,17 @@
+﻿@model Aplicacion.Web.Models.Asistencia
+@{
+    ViewData["Title"] = "Asistencia registrada";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="text-success mb-4">✅ Asistencia registrada correctamente</h2>
+
+    <p><strong>Materia:</strong> @ViewBag.Materia</p>
+    <p><strong>Fecha y hora:</strong> @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+
+    <div class="alert alert-info mt-4">
+        <p>Tu asistencia ha sido registrada con éxito en el sistema.</p>
+    </div>
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Volver al inicio</a>
+</div>

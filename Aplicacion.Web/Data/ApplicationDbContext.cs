@@ -13,5 +13,7 @@ namespace Aplicacion.Web.Data
         public DbSet<Aplicacion.Web.Models.Alumno> Alumno { get; set; } = default!;
         public DbSet<Aplicacion.Web.Models.Docente> Docente { get; set; } = default!;
         public DbSet<Aplicacion.Web.Models.Asistencia> Asistencia { get; set; } = default!;
+        public DbSet<Aplicacion.Web.Models.ClaseActiva> ClasesActivas { get; set; } = default!;
+
     }
 }

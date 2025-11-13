@@ -18,16 +18,22 @@
             @Html.DisplayFor(model => model.Alumno.Matricula)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaHora)
+            @Html.DisplayNameFor(model => model.Docente)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaHora)
+            @Html.DisplayFor(model => model.Docente.Correo)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Materia)
+            @Html.DisplayNameFor(model => model.ClaseActiva)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Materia)
+            @Html.DisplayFor(model => model.ClaseActiva.DocenteId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FechaRegistro)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Estado)

@@ -4,6 +4,7 @@ using Aplicacion.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aplicacion.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112205747_CrearTablaClasesActivas")]
+    partial class CrearTablaClasesActivas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,24 +61,24 @@ namespace Aplicacion.Web.Data.Migrations
                     b.Property<int>("AlumnoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ClaseActivaId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("DocenteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("FechaRegistro")
+                    b.Property<DateTime>("FechaHora")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Materia")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlumnoId");
-
-                    b.HasIndex("ClaseActivaId");
 
                     b.HasIndex("DocenteId");
 
@@ -94,6 +97,7 @@ namespace Aplicacion.Web.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CodigoClase")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DocenteId")
@@ -349,21 +353,11 @@ namespace Aplicacion.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aplicacion.Web.Models.ClaseActiva", "ClaseActiva")
-                        .WithMany()
-                        .HasForeignKey("ClaseActivaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aplicacion.Web.Models.Docente", "Docente")
+                    b.HasOne("Aplicacion.Web.Models.Docente", null)
                         .WithMany("Asistencias")
                         .HasForeignKey("DocenteId");
 
                     b.Navigation("Alumno");
-
-                    b.Navigation("ClaseActiva");
-
-                    b.Navigation("Docente");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

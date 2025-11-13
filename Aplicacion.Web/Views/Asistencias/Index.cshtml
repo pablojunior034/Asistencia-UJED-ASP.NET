@@ -16,10 +16,13 @@
                 @Html.DisplayNameFor(model => model.Alumno)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaHora)
+                @Html.DisplayNameFor(model => model.Docente)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Materia)
+                @Html.DisplayNameFor(model => model.ClaseActiva)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaRegistro)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
@@ -34,10 +37,13 @@
                 @Html.DisplayFor(modelItem => item.Alumno.Matricula)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaHora)
+                @Html.DisplayFor(modelItem => item.Docente.Correo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Materia)
+                @Html.DisplayFor(modelItem => item.ClaseActiva.DocenteId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaRegistro)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Estado)

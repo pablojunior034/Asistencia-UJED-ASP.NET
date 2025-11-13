@@ -19,14 +19,19 @@
                 <span asp-validation-for="AlumnoId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FechaHora" class="control-label"></label>
-                <input asp-for="FechaHora" class="form-control" />
-                <span asp-validation-for="FechaHora" class="text-danger"></span>
+                <label asp-for="DocenteId" class="control-label"></label>
+                <select asp-for="DocenteId" class="form-control" asp-items="ViewBag.DocenteId"></select>
+                <span asp-validation-for="DocenteId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Materia" class="control-label"></label>
-                <input asp-for="Materia" class="form-control" />
-                <span asp-validation-for="Materia" class="text-danger"></span>
+                <label asp-for="ClaseActivaId" class="control-label"></label>
+                <select asp-for="ClaseActivaId" class="form-control" asp-items="ViewBag.ClaseActivaId"></select>
+                <span asp-validation-for="ClaseActivaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaRegistro" class="control-label"></label>
+                <input asp-for="FechaRegistro" class="form-control" />
+                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Estado" class="control-label"></label>

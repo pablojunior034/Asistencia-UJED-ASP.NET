@@ -1,0 +1,20 @@
+﻿@model Aplicacion.Web.Models.ClaseActiva
+
+@{
+    ViewData["Title"] = "Código QR";
+    var urlAsistencia = Url.Action("Registrar", "Asistencias", new { codigo = Model.CodigoClase }, protocol: Context.Request.Scheme);
+}
+
+<h2>Código QR para la clase @Model.Materia</h2>
+<p><strong>Código de clase:</strong> @Model.CodigoClase</p>
+
+<div class="text-center">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=@urlAsistencia"
+         alt="Código QR de la clase" class="mt-3" />
+</div>
+
+<p class="mt-3 text-center">
+    Enlace directo para asistencia:<br />
+    <a href="@urlAsistencia">@urlAsistencia</a>
+</p>
+

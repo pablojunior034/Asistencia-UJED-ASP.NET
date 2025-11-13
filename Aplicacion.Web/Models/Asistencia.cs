@@ -9,19 +9,23 @@ namespace Aplicacion.Web.Models
         [Key]
         public int Id { get; set; }
 
+        // FK al Alumno (suponiendo que ya existe)
         [Required]
         public int AlumnoId { get; set; }
-
-        [ForeignKey("AlumnoId")]
         public Alumno Alumno { get; set; }
 
-        public DateTime FechaHora { get; set; } = DateTime.Now;
+        // FK al Docente (opcional, si lo guardas)
+        public int? DocenteId { get; set; }
+        public Docente? Docente { get; set; }
 
-        [StringLength(100)]
-        public string? Materia { get; set; }
+        // FK a la clase activa (nuevo)
+        [Required]
+        public int ClaseActivaId { get; set; }
+        public ClaseActiva ClaseActiva { get; set; }
 
-        [StringLength(50)]
+        public DateTime FechaRegistro { get; set; } = DateTime.Now;
+
+        // Estado/Tipo de asistencia (Presente, Retardo, etc.)
         public string Estado { get; set; } = "Presente";
     }
 }
-
