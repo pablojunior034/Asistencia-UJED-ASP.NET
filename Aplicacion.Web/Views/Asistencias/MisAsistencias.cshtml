@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Aplicacion.Web.Models.Asistencia>
+@{
+    int? selected = ViewBag.ClaseSeleccionada;
+}
+
+<h2>Asistencias de Mis Clases</h2>
+
+<form method="get" asp-action="MisAsistencias" class="mb-3">
+
+    <label>Filtrar por clase:</label>
+    <select name="claseId" class="form-control" onchange="this.form.submit()">
+        <option value="">-- Todas las clases --</option>
+
+        @foreach (var c in ViewBag.Clases)
+        {
+            <option value="@c.Id" selected="@(selected == c.Id)">
+                @c.Materia
+            </option>
+        }
+    </select>
+
+</form>
+
+<!-- BOTONES DE EXPORTACIÓN -->
+<a class="btn btn-success" asp-action="ExportarExcel" asp-route-claseId="@ViewBag.ClaseSeleccionada">Exportar a Excel</a>
+<a class="btn btn-danger" asp-action="ExportarPDF" asp-route-claseId="@ViewBag.ClaseSeleccionada">Exportar a PDF</a>
+
+<table class="table table-bordered table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Clase</th>
+            <th>Alumno</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.ClaseActiva.Materia</td>
+                <td>@a.Alumno.Nombre</td>
+                <td>@a.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

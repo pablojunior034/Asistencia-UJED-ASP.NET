@@ -43,11 +43,18 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="ClaseActivas" asp-action="Index">Mis clases</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Asistencias" asp-action="MisAsistencias">
+                                    Mis Asistencias
+                                </a>
+                            </li>
                         }
                         @if (User.IsInRole("Alumno"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Asistencias" asp-action="Index">Mis asistencias</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-controller="Asistencias" asp-action="RegistrarAsistencia">Registrar asistencia</a>
                             </li>
                         }
