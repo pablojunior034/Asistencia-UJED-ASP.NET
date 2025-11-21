@@ -1,29 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Aplicacion.Web.Data;
+using Aplicacion.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Aplicacion.Web.Data;
-using Aplicacion.Web.Models;
 using QRCoder;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aplicacion.Web.Controllers
 {
+    [Authorize(Roles = "Docente")]
     public class ClaseActivasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ClaseActivasController(ApplicationDbContext context)
+        public ClaseActivasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
         // GET: ClaseActivas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ClasesActivas.ToListAsync());
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null) return Unauthorized();
+
+            var docente = await _context.Docente
+                .FirstOrDefaultAsync(d => d.ApplicationUserId == user.Id);
+
+            if (docente == null)
+                return Content("No se encontró el docente asociado a tu cuenta.");
+
+            var clases = await _context.ClasesActivas
+                .Where(c => c.DocenteId == docente.Id)
+                .ToListAsync();
+
+            return View(clases);
         }
 
         // GET: ClaseActivas/Details/5
@@ -55,33 +74,32 @@ namespace Aplicacion.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Materia,DocenteId")] ClaseActiva claseActiva)
+        public async Task<IActionResult> Create([Bind("Materia")] ClaseActiva claseActiva)
         {
-            Console.WriteLine("Entro al metodo Create POST");
+            // Obtener usuario actual y su DocenteId
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var docente = await _context.Docente
+            .FirstOrDefaultAsync(d => d.ApplicationUserId == user.Id);
+
+            // Generar valores antes de validar
+            claseActiva.CodigoClase = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            claseActiva.FechaInicio = DateTime.Now;
+            claseActiva.FechaExpiracion = DateTime.Now.AddMinutes(15);
+            claseActiva.Activa = true;
+
+            // Asignar el docente real (no confiar en el DocenteId enviado por el form)
+            claseActiva.DocenteId = docente.Id;
+
             if (ModelState.IsValid)
             {
-                // Generar código y fechas
-                claseActiva.CodigoClase = Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
-                claseActiva.FechaInicio = DateTime.Now;
-                claseActiva.FechaExpiracion = DateTime.Now.AddMinutes(15);
-                claseActiva.Activa = true;
-
                 _context.Add(claseActiva);
                 await _context.SaveChangesAsync();
-
-                Console.WriteLine("Clase guardada correctamente, ID: " + claseActiva.Id);
-                // Redirigir a la acción que muestra el QR
                 return RedirectToAction(nameof(MostrarQR), new { id = claseActiva.Id });
             }
-            else
-            {
-                Console.WriteLine(">>> ModelState inválido <<<");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine($"Error: {error.ErrorMessage}");
-                }
-            }
-                return View(claseActiva);
+
+            return View(claseActiva);
         }
 
         public async Task<IActionResult> MostrarQR(int id)

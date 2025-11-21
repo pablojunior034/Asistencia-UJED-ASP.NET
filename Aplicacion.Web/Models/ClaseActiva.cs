@@ -12,7 +12,7 @@ namespace Aplicacion.Web.Models
         public string Materia { get; set; }
 
         [Required]
-        public string DocenteId { get; set; }
+        public int DocenteId { get; set; }
 
         public string? CodigoClase { get; set; }
 

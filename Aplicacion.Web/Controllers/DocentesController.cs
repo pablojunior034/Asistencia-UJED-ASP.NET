@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Aplicacion.Web.Data;
+using Aplicacion.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Aplicacion.Web.Data;
-using Aplicacion.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aplicacion.Web.Controllers
 {
+    [Authorize]
     public class DocentesController : Controller
     {
         private readonly ApplicationDbContext _context;

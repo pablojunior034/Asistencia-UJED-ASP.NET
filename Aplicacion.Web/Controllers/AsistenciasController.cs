@@ -1,219 +1,97 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Aplicacion.Web.Data;
+using Aplicacion.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Aplicacion.Web.Data;
 using Aplicacion.Web.Models;
+using Microsoft.AspNetCore.Identity;
 
-namespace Aplicacion.Web.Controllers
+[Authorize]
+public class AsistenciasController : Controller
 {
-    public class AsistenciasController : Controller
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public AsistenciasController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
-        private readonly ApplicationDbContext _context;
-
-        public AsistenciasController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: Asistencias
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Asistencia.Include(a => a.Alumno).Include(a => a.ClaseActiva).Include(a => a.Docente);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Asistencias/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var asistencia = await _context.Asistencia
-                .Include(a => a.Alumno)
-                .Include(a => a.ClaseActiva)
-                .Include(a => a.Docente)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (asistencia == null)
-            {
-                return NotFound();
-            }
-
-            return View(asistencia);
-        }
-
-        // GET: Asistencias/Create
-        public IActionResult Create()
-        {
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula");
-            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId");
-            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo");
-            return View();
-        }
-
-        // POST: Asistencias/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AlumnoId,DocenteId,ClaseActivaId,FechaRegistro,Estado")] Asistencia asistencia)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(asistencia);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
-            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
-            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
-            return View(asistencia);
-        }
-
-        // GET: Asistencias/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var asistencia = await _context.Asistencia.FindAsync(id);
-            if (asistencia == null)
-            {
-                return NotFound();
-            }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
-            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
-            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
-            return View(asistencia);
-        }
-
-        // POST: Asistencias/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AlumnoId,DocenteId,ClaseActivaId,FechaRegistro,Estado")] Asistencia asistencia)
-        {
-            if (id != asistencia.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(asistencia);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AsistenciaExists(asistencia.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AlumnoId"] = new SelectList(_context.Alumno, "Id", "Matricula", asistencia.AlumnoId);
-            ViewData["ClaseActivaId"] = new SelectList(_context.ClasesActivas, "Id", "DocenteId", asistencia.ClaseActivaId);
-            ViewData["DocenteId"] = new SelectList(_context.Docente, "Id", "Correo", asistencia.DocenteId);
-            return View(asistencia);
-        }
-
-        // GET: Asistencias/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var asistencia = await _context.Asistencia
-                .Include(a => a.Alumno)
-                .Include(a => a.ClaseActiva)
-                .Include(a => a.Docente)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (asistencia == null)
-            {
-                return NotFound();
-            }
-
-            return View(asistencia);
-        }
-
-        // POST: Asistencias/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var asistencia = await _context.Asistencia.FindAsync(id);
-            if (asistencia != null)
-            {
-                _context.Asistencia.Remove(asistencia);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AsistenciaExists(int id)
-        {
-            return _context.Asistencia.Any(e => e.Id == id);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Registrar(string codigo)
-        {
-            var clase = await _context.ClasesActivas.FirstOrDefaultAsync(c => c.CodigoClase == codigo && c.Activa);
-            if (clase == null)
-            {
-                return View("Mensaje", $"❌ Clase no encontrada o expirada ({codigo})");
-            }
-
-            if (DateTime.Now > clase.FechaExpiracion)
-            {
-                clase.Activa = false;
-                _context.ClasesActivas.Update(clase);
-                await _context.SaveChangesAsync();
-                return View("Mensaje", $"⚠️ Esta clase ha expirado. El código QR ya no es válido.");
-            }
-
-            int alumnoDePruebaId = 1; // temporal hasta implementar Identity
-
-            var asistenciaExistente = await _context.Asistencia
-                .FirstOrDefaultAsync(a => a.AlumnoId == alumnoDePruebaId && a.ClaseActivaId == clase.Id);
-
-            if (asistenciaExistente != null)
-            {
-                ViewBag.Materia = clase.Materia;
-                return View("Registrar", asistenciaExistente);
-            }
-
-            var asistencia = new Asistencia
-            {
-                AlumnoId = alumnoDePruebaId,
-                ClaseActivaId = clase.Id,
-                FechaRegistro = DateTime.Now
-            };
-
-            _context.Asistencia.Add(asistencia);
-            await _context.SaveChangesAsync();
-
-            ViewBag.Materia = clase.Materia;
-            return View("Registrar", asistencia);
-        }
-
+        _context = context;
+        _userManager = userManager;
     }
+
+    // ============================================
+    // Ver asistencias del alumno loggeado
+    // ============================================
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        var alumno = await _context.Alumno
+            .FirstOrDefaultAsync(a => a.ApplicationUserId == user.Id);
+
+        if (alumno == null)
+            return Content("No se encontró un Alumno asociado a esta cuenta.");
+
+        var asistencias = await _context.Asistencia
+            .Include(a => a.ClaseActiva)
+            .Where(a => a.AlumnoId == alumno.Id)
+            .ToListAsync();
+
+        return View(asistencias);
+    }
+
+
+    // ============================================
+    // Registrar asistencia (QR)
+    // ============================================
+    public async Task<IActionResult> Registrar(string codigo)
+    {
+        var clase = await _context.ClasesActivas
+            .FirstOrDefaultAsync(c => c.CodigoClase == codigo);
+
+        if (clase == null)
+            return Content("Clase no encontrada.");
+
+        if (!clase.Activa || clase.FechaExpiracion < DateTime.Now)
+            return Content("La clase ya expiró.");
+
+        var user = await _userManager.GetUserAsync(User);
+        var alumno = await _context.Alumno
+            .FirstOrDefaultAsync(a => a.ApplicationUserId == user.Id);
+
+        if (alumno == null)
+            return Content("No se encontró un alumno asociado a tu cuenta.");
+
+        // Evitar duplicados
+        var existe = await _context.Asistencia.AnyAsync(a =>
+            a.ClaseActivaId == clase.Id &&
+            a.AlumnoId == alumno.Id
+        );
+
+        if (existe)
+            return Content("Ya registraste tu asistencia.");
+
+        // Registrar asistencia
+        var asistencia = new Asistencia
+        {
+            ClaseActivaId = clase.Id,
+            AlumnoId = alumno.Id,
+            FechaRegistro = DateTime.Now
+        };
+
+        _context.Asistencia.Add(asistencia);
+        await _context.SaveChangesAsync();
+
+        return View("Registrar", clase);
+    }
+
+    [Authorize(Roles = "Alumno")]
+    public IActionResult RegistrarAsistencia()
+    {
+        return View();
+    }
+
+    
 }

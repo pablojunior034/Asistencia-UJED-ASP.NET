@@ -18,6 +18,13 @@ namespace Aplicacion.Web.Models
 
         // Relación con asistencias
         public ICollection<Asistencia>? Asistencias { get; set; }
+        public string? ApplicationUserId { get; set; }
+
+        public ApplicationUser? Usuario
+        {
+            get; set;
+
+        }
     }
 }
 

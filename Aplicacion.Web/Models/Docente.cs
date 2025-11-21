@@ -4,6 +4,7 @@ namespace Aplicacion.Web.Models
 {
     public class Docente
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -17,6 +18,10 @@ namespace Aplicacion.Web.Models
         public string? Materia { get; set; }
 
         public ICollection<Asistencia>? Asistencias { get; set; }
+
+        public string? ApplicationUserId { get; set; }
+
+        public ApplicationUser? Usuario { get; set; }
     }
 }
 
